@@ -3,12 +3,17 @@ using UnityEngine;
 public class PrimitiveCreator : MonoBehaviour
 {
 	private SteamVR_TrackedController _controller;
+	GameObject Voxel;
+	GameObject CL;
+	private static GameObject cubePrefab;
+	private static GameObject cubeContainer;
+	private static int cubeCount = 0;
+	private static List<GameObject> cubes;
 
 	void Start()
 	{
 		GameObject Voxel = GameObject.Find ("Voxel");
-	//	VoxelTools voxelTools = GetComponent<VoxelTools> ();
-	//	VoxelCube voxelCube = GetComponent<VoxelCube> ();
+		CL = GameObject.Find ("Controller (left)");
 	}
 
 	private void OnEnable()
@@ -27,22 +32,64 @@ public class PrimitiveCreator : MonoBehaviour
 	#region Primitive Spawning
 	private void HandleTriggerClicked(object sender, ClickedEventArgs e)
 	{
-		SpawnVoxelAtController();
+			VoxelMaker();
 	}
 
-	private void SpawnVoxelAtController()
-	{
-		GameObject Voxel = GameObject.Find ("Voxel");
-		var spawnedVoxel = Voxel;
-		spawnedVoxel.transform.position = transform.position;
-		spawnedVoxel.transform.rotation = transform.rotation;
-
-		spawnedVoxel.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-		//if (_currentPrimitiveType == PrimitiveType.Plane)
-		//	spawnedPrimitive.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+	private void VoxelMaker () {
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 2; j++)
+				for (int k = 0; k < 2; k++)
+					MakeCube (i, j, k);
 	}
 
 	#endregion
-		
+
+	public static GameObject MakeCube(float x, float y, float z)
+	{
+		return MakeCube(x, y, z, Color.red, 1);
+	}
+
+	public static GameObject MakeCube(float x, float y, float z, Color color)
+	{
+		return MakeCube(x, y, z, color, 1);
+	}
+
+	public static GameObject MakeCube(float x, float y, float z, Color color, float size)
+	{
+		return MakeCube (new Vector3 (x, y, z), color, size);
+	}
+
+	private static GameObject GetCubePrefab()
+	{
+		if (cubePrefab == null)
+			cubePrefab = Resources.Load("cube") as GameObject;
+		return cubePrefab;
+	}
+
+	public static GameObject MakeCube(Vector3 position, Color color, float size)
+	{
+		cubeCount++;
+		if (cubeContainer == null)
+		{
+			cubeContainer = new GameObject("cube container");
+			cubeContainer.transform = PrimitiveCreator.CL.transform;
+			cubes = new List<GameObject>();
+		}
+
+		GameObject cube = Instantiate(GetCubePrefab()) as GameObject;
+		cubes.Add(cube);
+		cube.transform.position = position;
+		cube.transform.parent = PrimitiveCreator.CL.transform;
+		cube.name = "cube " + cubeCount;
+
+		cube.GetComponent<Renderer>().material.color = color;
+		cube.transform.localScale = new Vector3(size, size, size);
+
+		return cube;
+	}
+
+
+
+}
 
 }
