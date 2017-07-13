@@ -1,0 +1,48 @@
+using UnityEngine;
+
+public class PrimitiveCreator : MonoBehaviour
+{
+	private SteamVR_TrackedController _controller;
+
+	void Start()
+	{
+		GameObject Voxel = GameObject.Find ("Voxel");
+	//	VoxelTools voxelTools = GetComponent<VoxelTools> ();
+	//	VoxelCube voxelCube = GetComponent<VoxelCube> ();
+	}
+
+	private void OnEnable()
+	{
+		_controller = GetComponent<SteamVR_TrackedController>();
+		_controller.TriggerClicked += HandleTriggerClicked;
+		//_controller.PadClicked += HandlePadClicked;
+	}
+
+	private void OnDisable()
+	{
+		_controller.TriggerClicked -= HandleTriggerClicked;
+		//_controller.PadClicked -= HandlePadClicked;
+	}
+
+	#region Primitive Spawning
+	private void HandleTriggerClicked(object sender, ClickedEventArgs e)
+	{
+		SpawnVoxelAtController();
+	}
+
+	private void SpawnVoxelAtController()
+	{
+		GameObject Voxel = GameObject.Find ("Voxel");
+		var spawnedVoxel = Voxel;
+		spawnedVoxel.transform.position = transform.position;
+		spawnedVoxel.transform.rotation = transform.rotation;
+
+		spawnedVoxel.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+		//if (_currentPrimitiveType == PrimitiveType.Plane)
+		//	spawnedPrimitive.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+	}
+
+	#endregion
+		
+
+}
