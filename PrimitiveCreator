@@ -32,7 +32,7 @@ public class PrimitiveCreator : MonoBehaviour
 		if (_currentPrimitiveType == PrimitiveType.Plane)
 			spawnedPrimitive.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 	}
-
+	#endregion
 }
 
 
